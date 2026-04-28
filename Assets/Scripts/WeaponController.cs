@@ -6,11 +6,13 @@ public class WeaponController : MonoBehaviour
 {
     [SerializeField] private GameObject bulletPrefab;
     [SerializeField] private Transform bulletSpawnPoint;
+    [SerializeField] private Transform slider;
     [SerializeField] private float fireRate;
     [SerializeField] private float bulletSpeed;
 
     private float timePass;
     private VRMagazine magazine;
+    private bool sliderCargado;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -22,23 +24,29 @@ public class WeaponController : MonoBehaviour
     void Update()
     {
         timePass += Time.deltaTime;
+        if (slider.localPosition.z > 0.03f)
+        {
+            sliderCargado = true;
+        }
     }
 
     public void AddMagazine(SelectEnterEventArgs eventArgs)
     {
         Debug.Log("Bien metio niño");
         magazine = eventArgs.interactableObject.transform.GetComponent<VRMagazine>();
+        sliderCargado = false;
     }
 
     public void RemoveMagazine(SelectExitEventArgs eventArgs)
     {
         Debug.Log("Eso eso, recarga");
         magazine = null;
+        sliderCargado = false;
     }
 
     public void Shoot()
     {
-        if(magazine != null)
+        if(magazine != null && sliderCargado == true)
         {
             if (fireRate <= timePass && magazine.bullets>0)
             {
